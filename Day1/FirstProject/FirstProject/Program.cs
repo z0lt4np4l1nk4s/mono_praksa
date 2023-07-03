@@ -1,4 +1,5 @@
-﻿using FirstProject;
+﻿using FirstProject.Classes;
+using FirstProject.Interfaces;
 
 ISchool iSchool = new School("MATHOS");
 

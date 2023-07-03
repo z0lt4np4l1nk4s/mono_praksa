@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FirstProject.Interfaces;
 
-namespace FirstProject
+namespace FirstProject.Classes
 {
     public class School : ISchool
     {

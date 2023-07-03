@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstProject
+namespace FirstProject.Classes
 {
     public class Professor : User
     {
@@ -17,7 +17,7 @@ namespace FirstProject
         public override void WriteInfo()
         {
             Console.WriteLine("Professor: " + GetName());
-            if(subjects.Count == 0) Console.WriteLine("Not teaching anything");
+            if (subjects.Count == 0) Console.WriteLine("Not teaching anything");
             else Console.WriteLine("Teaching: " + string.Join(", ", subjects.Select(x => x.ToString())));
         }
 
@@ -26,7 +26,7 @@ namespace FirstProject
         /// </summary>
         /// <returns>List of the professor's subjects</returns>
         public List<Subject> GetSubjects() => subjects;
-        
+
         /// <summary>
         /// Method for adding a subject to the professor. If the subject is already added to the professor, then nothing happens.
         /// </summary>
