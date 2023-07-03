@@ -151,5 +151,5 @@ Console.WriteLine();
 string className = ivan.ClassName;
 className = "MiR";
 //The class name for Ivan didn't change
-Console.WriteLine(ivan.ClassName);
-//Primitive datatypes use deep copy
+Console.WriteLine(className + " - " + ivan.ClassName);
+//Primitive data types use deep copy
