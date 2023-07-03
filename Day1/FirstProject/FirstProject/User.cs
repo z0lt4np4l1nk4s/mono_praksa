@@ -12,6 +12,7 @@ namespace FirstProject
         public string Name { get; set; } = "";
         public string LastName { get; set; } = "";
         public DateTime DateOfBirth { get; set; }
+        private int privateTest = 0;
 
         /// <summary>
         /// Method for getting the full name of the user
