@@ -155,4 +155,4 @@ Console.WriteLine(className + " - " + ivan.ClassName);
 //Primitive data types use deep copy
 
 //Its not possible to create an object from an abstract class
-User user = new User();
+//User user = new User();
