@@ -18,7 +18,7 @@ namespace FirstProject
         {
             //Not available because of its protection level
             //Console.WriteLine(privateTest);
-            Console.WriteLine("Student: " + GetName());
+            Console.WriteLine("Student: " + GetName() + $" ({ClassName})");
             Console.WriteLine("Average grade: " + AverageGrade.ToString("0.00"));
         }
     }

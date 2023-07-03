@@ -138,3 +138,18 @@ iSchool.WriteStudentsDetailedInfo();
 iSchool.RemoveStudent(ivan);
 //Displaying the students updated info
 iSchool.WriteStudentsDetailedInfo();
+
+Console.WriteLine();
+//Testing how primitive and complex datatypes work
+Student testStudent = ivan;
+testStudent.ClassName = "M";
+//ClassName for Ivan changed as well
+ivan.WriteInfo();
+//Complex data types use shallow copy
+
+Console.WriteLine();
+string className = ivan.ClassName;
+className = "MiR";
+//The class name for Ivan didn't change
+Console.WriteLine(ivan.ClassName);
+//Primitive datatypes use deep copy
