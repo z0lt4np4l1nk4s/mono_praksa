@@ -44,13 +44,28 @@ Student lovro = new Student()
     ClassName = "MiR"
 };
 
+Student consoleStudent = new Student() { Id = 5 };
+Console.WriteLine("Unesite ime studenta: ");
+consoleStudent.Name = Console.ReadLine() ?? "";
+Console.WriteLine("Unesite prezime studenta: ");
+consoleStudent.LastName = Console.ReadLine() ?? "";
+Console.WriteLine("Unesite razred studenta: ");
+consoleStudent.ClassName = Console.ReadLine() ?? "";
+Console.WriteLine("Unesite prosjek studenta: ");
+consoleStudent.AverageGrade = Convert.ToDouble(Console.ReadLine() ?? "0");
+Console.WriteLine("Unesite datum rodenja studenta u formatu (yyyy.MM.dd): ");
+string[] array = (Console.ReadLine() ?? "").Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+consoleStudent.DateOfBirth = new DateTime(Convert.ToInt32(array[0]), Convert.ToInt32(array[1]), Convert.ToInt32(array[2]));
+
 //Displaying a few students info
+consoleStudent.WriteInfo();
+Console.WriteLine();
 lucija.WriteInfo();
 Console.WriteLine();
 lovro.WriteInfo();
 
 //Adding the students to the school
-List<Student> students = new List<Student> { pero, lucija, ivan, lovro};
+List<Student> students = new List<Student> { pero, lucija, ivan, lovro, consoleStudent};
 
 foreach (Student student in students) iSchool.AddStudent(student);
 
