@@ -58,6 +58,7 @@ string[] array = (Console.ReadLine() ?? "").Split(new string[] { "." }, StringSp
 consoleStudent.DateOfBirth = new DateTime(Convert.ToInt32(array[0]), Convert.ToInt32(array[1]), Convert.ToInt32(array[2]));
 
 //Displaying a few students info
+Console.WriteLine();
 consoleStudent.WriteInfo();
 Console.WriteLine();
 lucija.WriteInfo();
