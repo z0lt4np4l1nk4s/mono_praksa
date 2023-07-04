@@ -5,11 +5,12 @@ using System.Web;
 
 namespace MessageProject.WebApi.Models
 {
-    public class Message
+    public class User
     {
         public int Id { get; set; }
-        public int SenderId { get; set; }
-        public string Text { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
     }

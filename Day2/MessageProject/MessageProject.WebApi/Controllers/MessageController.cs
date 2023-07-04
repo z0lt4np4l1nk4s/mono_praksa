@@ -10,44 +10,91 @@ namespace MessageProject.WebApi.Controllers
 {
     public class MessageController : ApiController
     {
-        private readonly List<Message> messages = new List<Message>();
+        private List<Message> messages { get { return StaticData.messages; } }
+        private List<User> users { get { return StaticData.users; } }
 
         // GET: api/Message
-        public IEnumerable<Message> Get()
+        public IHttpActionResult Get()
         {
-            return messages;
+            try
+            {
+                return Ok(messages);
+            }
+            catch { return InternalServerError(); }
         }
 
         // GET: api/Message/5
-        public Message Get(string id)
+        public IHttpActionResult Get(int id)
         {
-            Message message = messages.SingleOrDefault(x => x.Id == id);
-            return message;
+            try
+            {
+                Message message = messages.SingleOrDefault(x => x.Id == id);
+                if (message == null) return NotFound();
+                return Ok(message);
+            }
+            catch { return InternalServerError(); }
+        }
+
+        [HttpGet, Route(Name = "api/[controller]/[action]")]
+        public IHttpActionResult GetById(int id)
+        {
+            try
+            {
+                Message message = messages.SingleOrDefault(x => x.Id == id);
+                if (message == null) return NotFound();
+                return Ok(message);
+            }
+            catch { return InternalServerError(); }
         }
 
         // POST: api/Message
-        public void Post([FromBody]Message message)
+        public IHttpActionResult Post([FromBody] Message message)
         {
-            message.Id = Guid.NewGuid().ToString();
-            message.CreationTime = message.UpdateTime = DateTime.Now;
-            messages.Add(message);
+            try
+            {
+                if (!users.Any(x => x.Id == message.SenderId)) return BadRequest();
+                message.CreationTime = message.UpdateTime = DateTime.Now;
+                messages.Add(message);
+                return Ok(message);
+            }
+            catch { return InternalServerError(); }
         }
 
         // PUT: api/Message/5
-        public void Put(string id, [FromBody]Message message)
+        public IHttpActionResult Put(int id, [FromBody]Message message)
         {
-            Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
-            if (oldMessage == null) return;
-            oldMessage.Text = message.Text;
-            oldMessage.UpdateTime = DateTime.Now;
+            try
+            {
+                Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
+                if (oldMessage == null) return NotFound();
+                oldMessage.Text = message.Text;
+                oldMessage.UpdateTime = DateTime.Now;
+                return Ok(oldMessage);
+            }
+            catch { return InternalServerError(); }
+        }
+
+        public IHttpActionResult Delete()
+        {
+            try
+            {
+                messages.Clear();
+                return Ok();
+            }
+            catch { return InternalServerError(); }
         }
 
         // DELETE: api/Message/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
-            if(oldMessage == null) return;
-            messages.Remove(oldMessage);
+            try
+            {
+                Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
+                if (oldMessage == null) NotFound();
+                messages.Remove(oldMessage);
+                return Ok();
+            }
+            catch { return InternalServerError(); }
         }
     }
 }
