@@ -40,6 +40,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return Request.CreateResponse(HttpStatusCode.BadRequest, "Fill all fields");
                 User user = new User()
                 {
                     Id = Users.Count == 0 ? 1 : Users.Max(x => x.Id) + 1,
@@ -59,6 +60,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) BadRequest("Fill all fields");
                 User oldUser = Users.SingleOrDefault(x => x.Id == id);
                 if (oldUser == null) return Request.CreateResponse(HttpStatusCode.NotFound);
                 oldUser.Username = user.Username;
@@ -78,7 +80,7 @@ namespace MessageProject.WebApi.Controllers
                 User user = Users.SingleOrDefault(x => x.Id == id);
                 if (user == null) return Request.CreateResponse(HttpStatusCode.NotFound);
 
-                StaticData.messages.RemoveAll(x => x.Id == id);
+                StaticData.messages.RemoveAll(x => x.SenderId == id);
 
                 Users.Remove(user);
                 return Request.CreateResponse(HttpStatusCode.OK);

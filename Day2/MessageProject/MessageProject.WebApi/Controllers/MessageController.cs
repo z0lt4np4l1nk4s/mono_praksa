@@ -53,6 +53,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return BadRequest("Fill all fields");
                 if (!Users.Any(x => x.Id == postMessage.SenderId)) return BadRequest();
                 Message message = new Message()
                 {
@@ -72,6 +73,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return BadRequest("Fill all fields");
                 Message oldMessage = Messages.SingleOrDefault(x => x.Id == id);
                 if (oldMessage == null) return NotFound();
                 oldMessage.Text = message.Text;
