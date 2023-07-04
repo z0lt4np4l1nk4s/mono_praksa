@@ -10,7 +10,7 @@ namespace MessageProject.WebApi.Controllers
 {
     public class UserController : ApiController
     {
-        private List<User> users { get { return StaticData.users; } }
+        private List<User> Users { get { return StaticData.users; } }
 
 
         // GET: api/User
@@ -18,7 +18,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, users);
+                return Request.CreateResponse(HttpStatusCode.OK, Users);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't get all"); }
         }
@@ -28,7 +28,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                User user = users.FirstOrDefault(x => x.Id == id);
+                User user = Users.FirstOrDefault(x => x.Id == id);
                 return Request.CreateResponse(HttpStatusCode.OK, user);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't get by Id"); }
@@ -40,7 +40,7 @@ namespace MessageProject.WebApi.Controllers
             try
             {
                 user.UpdateTime = user.CreationTime = DateTime.Now;
-                users.Add(user);
+                Users.Add(user);
                 return Request.CreateResponse(HttpStatusCode.OK, user);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't create"); }
@@ -51,7 +51,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                User oldUser = users.SingleOrDefault(x => x.Id == id);
+                User oldUser = Users.SingleOrDefault(x => x.Id == id);
                 oldUser.UpdateTime = DateTime.Now;
                 oldUser.Username = user.Username;
                 oldUser.FirstName = user.FirstName;
@@ -66,8 +66,8 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                User user = users.SingleOrDefault(x => x.Id == id);
-                users.Remove(user);
+                User user = Users.SingleOrDefault(x => x.Id == id);
+                Users.Remove(user);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't delete"); }

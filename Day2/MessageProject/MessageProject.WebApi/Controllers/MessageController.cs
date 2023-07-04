@@ -10,15 +10,15 @@ namespace MessageProject.WebApi.Controllers
 {
     public class MessageController : ApiController
     {
-        private List<Message> messages { get { return StaticData.messages; } }
-        private List<User> users { get { return StaticData.users; } }
+        private List<Message> Messages { get { return StaticData.messages; } }
+        private List<User> Users { get { return StaticData.users; } }
 
         // GET: api/Message
         public IHttpActionResult Get()
         {
             try
             {
-                return Ok(messages);
+                return Ok(Messages);
             }
             catch { return InternalServerError(); }
         }
@@ -28,19 +28,20 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                Message message = messages.SingleOrDefault(x => x.Id == id);
+                Message message = Messages.SingleOrDefault(x => x.Id == id);
                 if (message == null) return NotFound();
                 return Ok(message);
             }
             catch { return InternalServerError(); }
         }
 
+        // GET: api/Message/GetById?id=5
         [HttpGet, Route(Name = "api/[controller]/[action]")]
         public IHttpActionResult GetById(int id)
         {
             try
             {
-                Message message = messages.SingleOrDefault(x => x.Id == id);
+                Message message = Messages.SingleOrDefault(x => x.Id == id);
                 if (message == null) return NotFound();
                 return Ok(message);
             }
@@ -52,9 +53,9 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                if (!users.Any(x => x.Id == message.SenderId)) return BadRequest();
+                if (!Users.Any(x => x.Id == message.SenderId)) return BadRequest();
                 message.CreationTime = message.UpdateTime = DateTime.Now;
-                messages.Add(message);
+                Messages.Add(message);
                 return Ok(message);
             }
             catch { return InternalServerError(); }
@@ -65,7 +66,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
+                Message oldMessage = Messages.SingleOrDefault(x => x.Id == id);
                 if (oldMessage == null) return NotFound();
                 oldMessage.Text = message.Text;
                 oldMessage.UpdateTime = DateTime.Now;
@@ -74,11 +75,12 @@ namespace MessageProject.WebApi.Controllers
             catch { return InternalServerError(); }
         }
 
+        // DELETE: api/Message
         public IHttpActionResult Delete()
         {
             try
             {
-                messages.Clear();
+                Messages.Clear();
                 return Ok();
             }
             catch { return InternalServerError(); }
@@ -89,9 +91,9 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                Message oldMessage = messages.SingleOrDefault(x => x.Id == id);
+                Message oldMessage = Messages.SingleOrDefault(x => x.Id == id);
                 if (oldMessage == null) NotFound();
-                messages.Remove(oldMessage);
+                Messages.Remove(oldMessage);
                 return Ok();
             }
             catch { return InternalServerError(); }
