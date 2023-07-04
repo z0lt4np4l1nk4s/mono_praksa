@@ -39,6 +39,8 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
+                if (Users.Any(x => x.Id == user.Id)) return Request.CreateResponse(HttpStatusCode.BadRequest, "Id exists");
+                user.Id = Users.Count == 0 ? 1 : Users.Max(x => x.Id) + 1;
                 user.UpdateTime = user.CreationTime = DateTime.Now;
                 Users.Add(user);
                 return Request.CreateResponse(HttpStatusCode.OK, user);
@@ -52,10 +54,11 @@ namespace MessageProject.WebApi.Controllers
             try
             {
                 User oldUser = Users.SingleOrDefault(x => x.Id == id);
-                oldUser.UpdateTime = DateTime.Now;
+                if (oldUser == null) return Request.CreateResponse(HttpStatusCode.NotFound);
                 oldUser.Username = user.Username;
                 oldUser.FirstName = user.FirstName;
                 oldUser.LastName = user.LastName;
+                oldUser.UpdateTime = DateTime.Now;
                 return Request.CreateResponse(HttpStatusCode.OK, oldUser);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't update"); }
@@ -67,6 +70,10 @@ namespace MessageProject.WebApi.Controllers
             try
             {
                 User user = Users.SingleOrDefault(x => x.Id == id);
+                if (user == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+
+                StaticData.messages.RemoveAll(x => x.Id == id);
+
                 Users.Remove(user);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

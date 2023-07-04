@@ -11,7 +11,7 @@ namespace MessageProject.WebApi.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
-        public DateTime CreationTime { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public DateTime CreationTime { get; set; } = DateTime.Now;
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
     }
 }

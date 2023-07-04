@@ -54,6 +54,7 @@ namespace MessageProject.WebApi.Controllers
             try
             {
                 if (!Users.Any(x => x.Id == message.SenderId)) return BadRequest();
+                message.Id = Messages.Count == 0 ? 1 : Messages.Max(x => x.Id) + 1;
                 message.CreationTime = message.UpdateTime = DateTime.Now;
                 Messages.Add(message);
                 return Ok(message);
