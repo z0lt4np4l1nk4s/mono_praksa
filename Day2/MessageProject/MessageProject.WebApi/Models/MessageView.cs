@@ -11,7 +11,7 @@ namespace MessageProject.WebApi.Models
         public string Text { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public bool IsUpdated { get; set; }
+        public bool IsEdited { get; set; }
 
         public MessageView(Message message)
         {
@@ -19,7 +19,7 @@ namespace MessageProject.WebApi.Models
             Text = message.Text;
             CreationTime = message.CreationTime;
             UpdateTime = message.CreationTime;
-            IsUpdated = message.CreationTime != message.UpdateTime;
+            IsEdited = message.CreationTime != message.UpdateTime;
         }
     }
 }

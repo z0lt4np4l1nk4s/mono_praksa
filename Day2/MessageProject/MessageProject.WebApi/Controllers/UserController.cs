@@ -49,7 +49,7 @@ namespace MessageProject.WebApi.Controllers
                 };
                 user.UpdateTime = user.CreationTime = DateTime.Now;
                 Users.Add(user);
-                return Request.CreateResponse(HttpStatusCode.OK, new UserView(user));
+                return Request.CreateResponse(HttpStatusCode.Created, new UserView(user));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't create"); }
         }

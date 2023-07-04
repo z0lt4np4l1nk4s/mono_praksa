@@ -62,7 +62,7 @@ namespace MessageProject.WebApi.Controllers
                 };
                 message.CreationTime = message.UpdateTime = DateTime.Now;
                 Messages.Add(message);
-                return Ok(new MessageView(message));
+                return Created("", new MessageView(message));
             }
             catch { return InternalServerError(); }
         }
