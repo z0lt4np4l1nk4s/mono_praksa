@@ -18,7 +18,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, Users);
+                return Request.CreateResponse(HttpStatusCode.OK, Users.Select(x => new UserView(x)));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't get all"); }
         }
@@ -29,27 +29,33 @@ namespace MessageProject.WebApi.Controllers
             try
             {
                 User user = Users.FirstOrDefault(x => x.Id == id);
-                return Request.CreateResponse(HttpStatusCode.OK, user);
+                if (user == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+                return Request.CreateResponse(HttpStatusCode.OK, new UserView(user));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't get by Id"); }
         }
 
         // POST: api/User
-        public HttpResponseMessage Post([FromBody]User user)
+        public HttpResponseMessage Post([FromBody]PostUser newUser)
         {
             try
             {
-                if (Users.Any(x => x.Id == user.Id)) return Request.CreateResponse(HttpStatusCode.BadRequest, "Id exists");
-                user.Id = Users.Count == 0 ? 1 : Users.Max(x => x.Id) + 1;
+                User user = new User()
+                {
+                    Id = Users.Count == 0 ? 1 : Users.Max(x => x.Id) + 1,
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    Username = newUser.Username
+                };
                 user.UpdateTime = user.CreationTime = DateTime.Now;
                 Users.Add(user);
-                return Request.CreateResponse(HttpStatusCode.OK, user);
+                return Request.CreateResponse(HttpStatusCode.OK, new UserView(user));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't create"); }
         }
 
         // PUT: api/User/5
-        public HttpResponseMessage Put(int id, [FromBody]User user)
+        public HttpResponseMessage Put(int id, [FromBody]PostUser user)
         {
             try
             {
@@ -59,7 +65,7 @@ namespace MessageProject.WebApi.Controllers
                 oldUser.FirstName = user.FirstName;
                 oldUser.LastName = user.LastName;
                 oldUser.UpdateTime = DateTime.Now;
-                return Request.CreateResponse(HttpStatusCode.OK, oldUser);
+                return Request.CreateResponse(HttpStatusCode.OK, new UserView(oldUser));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Can't update"); }
         }

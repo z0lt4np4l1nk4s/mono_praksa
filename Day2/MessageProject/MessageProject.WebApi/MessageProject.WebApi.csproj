@@ -163,8 +163,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageView.cs" />
+    <Compile Include="Models\PostMessage.cs" />
+    <Compile Include="Models\PostUser.cs" />
+    <Compile Include="Models\PutMessage.cs" />
     <Compile Include="Models\StaticData.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

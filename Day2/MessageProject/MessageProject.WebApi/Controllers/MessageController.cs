@@ -18,7 +18,7 @@ namespace MessageProject.WebApi.Controllers
         {
             try
             {
-                return Ok(Messages);
+                return Ok(Messages.Select(x => new MessageView(x)));
             }
             catch { return InternalServerError(); }
         }
@@ -30,7 +30,7 @@ namespace MessageProject.WebApi.Controllers
             {
                 Message message = Messages.SingleOrDefault(x => x.Id == id);
                 if (message == null) return NotFound();
-                return Ok(message);
+                return Ok(new MessageView(message));
             }
             catch { return InternalServerError(); }
         }
@@ -43,27 +43,32 @@ namespace MessageProject.WebApi.Controllers
             {
                 Message message = Messages.SingleOrDefault(x => x.Id == id);
                 if (message == null) return NotFound();
-                return Ok(message);
+                return Ok(new MessageView(message));
             }
             catch { return InternalServerError(); }
         }
 
         // POST: api/Message
-        public IHttpActionResult Post([FromBody] Message message)
+        public IHttpActionResult Post([FromBody] PostMessage postMessage)
         {
             try
             {
-                if (!Users.Any(x => x.Id == message.SenderId)) return BadRequest();
-                message.Id = Messages.Count == 0 ? 1 : Messages.Max(x => x.Id) + 1;
+                if (!Users.Any(x => x.Id == postMessage.SenderId)) return BadRequest();
+                Message message = new Message()
+                {
+                    Id = Messages.Count == 0 ? 1 : Messages.Max(x => x.Id) + 1,
+                    Text = postMessage.Text,
+                    SenderId = postMessage.SenderId
+                };
                 message.CreationTime = message.UpdateTime = DateTime.Now;
                 Messages.Add(message);
-                return Ok(message);
+                return Ok(new MessageView(message));
             }
             catch { return InternalServerError(); }
         }
 
         // PUT: api/Message/5
-        public IHttpActionResult Put(int id, [FromBody]Message message)
+        public IHttpActionResult Put(int id, [FromBody]PutMessage message)
         {
             try
             {
@@ -71,7 +76,7 @@ namespace MessageProject.WebApi.Controllers
                 if (oldMessage == null) return NotFound();
                 oldMessage.Text = message.Text;
                 oldMessage.UpdateTime = DateTime.Now;
-                return Ok(oldMessage);
+                return Ok(new MessageView(oldMessage));
             }
             catch { return InternalServerError(); }
         }
