@@ -15,7 +15,7 @@ namespace GppApp.WebApi.Controllers
     public class LocationController : ApiController
     {
         public string ConnectionString { get => ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString; }
-        private LocationService locationService;
+        private readonly LocationService locationService;
 
         public LocationController()
         {
