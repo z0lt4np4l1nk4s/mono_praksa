@@ -15,7 +15,7 @@ namespace GppApp.Repository
     {
         public string ConnectionString { get => ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString; }
 
-        public List<Customer> GetAll()
+        public async Task<List<Customer>> GetAllAsync()
         {
             List<Customer> customers = new List<Customer>();
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -23,22 +23,19 @@ namespace GppApp.Repository
                 string query = "SELECT * FROM \"Customer\" c INNER JOIN \"User\" u ON c.\"Id\" = u.\"Id\" INNER JOIN \"Location\" l ON u.\"LocationId\" = l.\"Id\";";
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 
-                connection.Open();
+                await connection.OpenAsync();
 
-                NpgsqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
 
-                if (reader.HasRows)
+                while (reader.HasRows && await reader.ReadAsync())
                 {
-                    while (reader.Read())
-                    {
-                        customers.Add(ReadCustomer(reader));
-                    }
+                    customers.Add(ReadCustomer(reader));
                 }
             }
             return customers;
         }
 
-        public Customer GetById(Guid id)
+        public async Task<Customer> GetByIdAsync(Guid id)
         {
             Customer customer = null;
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -47,11 +44,11 @@ namespace GppApp.Repository
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@id", id);
 
-                connection.Open();
+                await connection.OpenAsync();
 
-                NpgsqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
 
-                if (reader.HasRows && reader.Read())
+                if (reader.HasRows && await reader.ReadAsync())
                 {
                     customer = ReadCustomer(reader);
                 }
@@ -59,7 +56,7 @@ namespace GppApp.Repository
             return customer;
         }
 
-        public bool Add(Customer customer)
+        public async Task<bool> AddAsync(Customer customer)
         {
             bool succeded = false;
 
@@ -80,23 +77,23 @@ namespace GppApp.Repository
                 customerCommand.Parameters.AddWithValue("@id", customer.Id);
                 customerCommand.Parameters.AddWithValue("@registerDate", customer.RegisterDate);
 
-                connection.Open();
+                await connection.OpenAsync();
                 NpgsqlTransaction transaction = connection.BeginTransaction();
 
                 userCommand.Transaction = customerCommand.Transaction = transaction;
 
-                int userResult = userCommand.ExecuteNonQuery();
-                int customerResult = customerCommand.ExecuteNonQuery();
+                int userResult = await userCommand.ExecuteNonQueryAsync();
+                int customerResult = await customerCommand.ExecuteNonQueryAsync();
                 if (userResult != 0 && customerResult != 0)
                 {
                     succeded = true;
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
             }
             return succeded;
         }
 
-        public bool Update(Customer customer)
+        public async Task<bool> UpdateAsync(Customer customer)
         {
             int numberOfAffectedRows = 0;
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -140,13 +137,13 @@ namespace GppApp.Repository
 
                 command.CommandText = "UPDATE \"User\" SET " + string.Join(", ", updatedValues) + " WHERE \"Id\" = @id";
 
-                connection.Open();
-                numberOfAffectedRows = command.ExecuteNonQuery();
+                await connection.OpenAsync();
+                numberOfAffectedRows = await command.ExecuteNonQueryAsync();
             }
             return numberOfAffectedRows != 0;
         }
 
-        public bool Remove(Guid id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             bool succeded = false;
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -159,18 +156,18 @@ namespace GppApp.Repository
                 NpgsqlCommand userCommand = new NpgsqlCommand(userQuery, connection);
                 userCommand.Parameters.AddWithValue("@id", id);
 
-                connection.Open();
+                await connection.OpenAsync();
                 NpgsqlTransaction transaction = connection.BeginTransaction();
 
                 customerCommand.Transaction = userCommand.Transaction = transaction;
 
-                int customerResult = customerCommand.ExecuteNonQuery();
-                int userResult = userCommand.ExecuteNonQuery();
+                int customerResult = await customerCommand.ExecuteNonQueryAsync();
+                int userResult = await userCommand.ExecuteNonQueryAsync();
 
                 if (customerResult != 0 && userResult != 0)
                 {
                     succeded = true;
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
             }
             return succeded;

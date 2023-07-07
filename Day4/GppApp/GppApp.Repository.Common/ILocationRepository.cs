@@ -9,24 +9,24 @@ namespace GppApp.Repository.Common
 {
     public interface ILocationRepository
     {
-        List<Location> GetAll();
+        Task<List<Location>> GetAllAsync();
 
         /// <summary>
         /// Getting the location by Id
         /// </summary>
         /// <param name="id">The location's Id</param>
         /// <returns>The location object, null if not found</returns>
-        Location GetById(Guid id);
+        Task<Location> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Getting the location by it's parameters
         /// </summary>
         /// <param name="location">The location for which to search a record in the database</param>
         /// <returns>The location object, null if not found</returns>
-        Location Get(Location location);
+        Task<Location> GetAsync(Location location);
 
-        bool Add(Location location);
+        Task<bool> AddAsync(Location location);
 
-        bool Update(Location location);
+        Task<bool> UpdateAsync(Location location);
     }
 }

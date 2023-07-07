@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace GppApp.WebApi.Controllers
@@ -20,22 +21,23 @@ namespace GppApp.WebApi.Controllers
         }
 
         // GET: api/Location
-        public HttpResponseMessage Get()
+        public async Task<HttpResponseMessage> Get()
         {
             try
             {
-                return Request.CreateResponse(HttpStatusCode.OK, iLocationService.GetAll().Select(x => new LocationView(x)));
+                List<Location> locations = await iLocationService.GetAllAsync();
+                return Request.CreateResponse(HttpStatusCode.OK, locations.Select(x => new LocationView(x)));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Code crash"); }
         }
 
         // GET: api/Location/5
-        public HttpResponseMessage Get(Guid id)
+        public async Task<HttpResponseMessage> Get(Guid id)
         {
             try
             {
                 if (id == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                Location location = iLocationService.GetById(id);
+                Location location = await iLocationService.GetByIdAsync(id);
                 if (location == null) return Request.CreateResponse(HttpStatusCode.NotFound);
                 return Request.CreateResponse(HttpStatusCode.OK, new LocationView(location));
             }
@@ -43,7 +45,7 @@ namespace GppApp.WebApi.Controllers
         }
 
         // POST: api/Location
-        public HttpResponseMessage Post([FromBody] LocationView location)
+        public async Task<HttpResponseMessage> Post([FromBody] LocationView location)
         {
             try
             {
@@ -51,7 +53,7 @@ namespace GppApp.WebApi.Controllers
                 Location newLocation = new Location(location);
                 newLocation.Id = Guid.NewGuid();
 
-                bool result = iLocationService.Add(newLocation);
+                bool result = await iLocationService.AddAsync(newLocation);
 
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -60,7 +62,7 @@ namespace GppApp.WebApi.Controllers
         }
 
         // PUT: api/Location/5
-        public HttpResponseMessage Put(Guid id, [FromBody] LocationView location)
+        public async Task<HttpResponseMessage> Put(Guid id, [FromBody] LocationView location)
         {
             try
             {
@@ -68,7 +70,7 @@ namespace GppApp.WebApi.Controllers
                 Location newLocation = new Location(location);
                 newLocation.Id = id;
 
-                bool result = iLocationService.Update(newLocation);
+                bool result = await iLocationService.UpdateAsync(newLocation);
 
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK);

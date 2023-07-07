@@ -9,14 +9,14 @@ namespace GppApp.Repository.Common
 {
     public interface ICustomerRepository
     {
-        List<Customer> GetAll();
+        Task<List<Customer>> GetAllAsync();
 
-        Customer GetById(Guid id);
+        Task<Customer> GetByIdAsync(Guid id);
 
-        bool Add(Customer customer);
+        Task<bool> AddAsync(Customer customer);
 
-        bool Update(Customer customer);
+        Task<bool> UpdateAsync(Customer customer);
 
-        bool Remove(Guid id);
+        Task<bool> RemoveAsync(Guid id);
     }
 }

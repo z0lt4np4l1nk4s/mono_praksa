@@ -19,24 +19,24 @@ namespace GppApp.Service
             repo = new LocationRepository();
         }
 
-        public List<Location> GetAll() => repo.GetAll();
+        public async Task<List<Location>> GetAllAsync() => await repo.GetAllAsync();
 
         /// <summary>
         /// Getting the location by Id
         /// </summary>
         /// <param name="id">The location's Id</param>
         /// <returns>The location object, null if not found</returns>
-        public Location GetById(Guid id) => repo.GetById(id);
+        public async Task<Location> GetByIdAsync(Guid id) => await repo.GetByIdAsync(id);
 
         /// <summary>
         /// Getting the location by it's parameters
         /// </summary>
         /// <param name="location">The location for which to search a record in the database</param>
         /// <returns>The location object, null if not found</returns>
-        public Location Get(Location location) => repo.Get(location);
+        public async Task<Location> GetAsync(Location location) => await repo.GetAsync(location);
 
-        public bool Add(Location location) => repo.Add(location);
+        public async Task<bool> AddAsync(Location location) => await repo.AddAsync(location);
 
-        public bool Update(Location location) => repo.Update(location);
+        public async Task<bool> UpdateAsync(Location location) => await repo.UpdateAsync(location);
     }
 }

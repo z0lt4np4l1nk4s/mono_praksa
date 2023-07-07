@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Helpers;
 using System.Web.Http;
@@ -25,24 +26,24 @@ namespace GppApp.WebApi.Controllers
         }
 
         // GET: api/Customer
-        public HttpResponseMessage Get()
+        public async Task<HttpResponseMessage> Get()
         {
             try
             {
-                List<CustomerView> customers = iCustomerService.GetAll().Select(x => new CustomerView(x)).ToList();
+                List<Customer> customers = await iCustomerService.GetAllAsync();
                 if (customers == null) throw new Exception();
-                return Request.CreateResponse(HttpStatusCode.OK, customers);
+                return Request.CreateResponse(HttpStatusCode.OK, customers.Select(x => new CustomerView(x)).ToList());
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Code crash"); }
         }
 
         // GET: api/Customer/5
-        public HttpResponseMessage Get(Guid id)
+        public async Task<HttpResponseMessage> Get(Guid id)
         {
             try
             {
                 if (id == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                Customer customer = iCustomerService.GetById(id);
+                Customer customer = await iCustomerService.GetByIdAsync(id);
 
                 if (customer == null) return Request.CreateResponse(HttpStatusCode.NotFound);
                 return Request.CreateResponse(HttpStatusCode.OK, new CustomerView(customer));
@@ -51,7 +52,7 @@ namespace GppApp.WebApi.Controllers
         }
 
         // POST: api/Customer
-        public HttpResponseMessage Post([FromBody] CustomerView customer)
+        public async Task<HttpResponseMessage> Post([FromBody] CustomerView customer)
         {
             try
             {
@@ -67,7 +68,7 @@ namespace GppApp.WebApi.Controllers
                     PhoneNumber = customer.PhoneNumber,
                     Location = new Location(customer.Location),
                 };
-                bool success = iCustomerService.Add(newCustomer);
+                bool success = await iCustomerService.AddAsync(newCustomer);
                 if(!success) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK, new CustomerView(newCustomer));
             }
@@ -75,12 +76,12 @@ namespace GppApp.WebApi.Controllers
         }
 
         // PUT: api/Customer/5
-        public HttpResponseMessage Put(Guid id, [FromBody] PutCustomer customer)
+        public async Task<HttpResponseMessage> Put(Guid id, [FromBody] PutCustomer customer)
         {
             try
             {
                 if (id == null || customer == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                bool result = iCustomerService.Update(new Customer()
+                bool result = await iCustomerService.UpdateAsync(new Customer()
                 {
                     Id = id,
                     PhoneNumber = customer.PhoneNumber,
@@ -97,12 +98,12 @@ namespace GppApp.WebApi.Controllers
         }
 
         // DELETE: api/Customer/5
-        public HttpResponseMessage Delete(Guid id)
+        public async Task<HttpResponseMessage> Delete(Guid id)
         {
             try
             {
                 if (id == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                bool result = iCustomerService.Remove(id);
+                bool result = await iCustomerService.RemoveAsync(id);
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest, "Not deleted");
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

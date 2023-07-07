@@ -14,7 +14,7 @@ namespace GppApp.Repository
     {
         public string ConnectionString { get => ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString; }
 
-        public List<Location> GetAll()
+        public async Task<List<Location>> GetAllAsync()
         {
             List<Location> locations = new List<Location>();
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -22,9 +22,11 @@ namespace GppApp.Repository
                 string query = "SELECT * FROM \"Location\"";
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
 
-                NpgsqlDataReader reader = command.ExecuteReader();
+                await connection.OpenAsync();
 
-                while (reader.HasRows && reader.Read())
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+                while (reader.HasRows && await reader.ReadAsync())
                 {
                     locations.Add(ReadLocation(reader));
                 }
@@ -37,7 +39,7 @@ namespace GppApp.Repository
         /// </summary>
         /// <param name="id">The location's Id</param>
         /// <returns>The location object, null if not found</returns>
-        public Location GetById(Guid id)
+        public async Task<Location> GetByIdAsync(Guid id)
         {
             if (id == null) return null;
             Location location = null;
@@ -47,9 +49,11 @@ namespace GppApp.Repository
                 NpgsqlCommand command = new NpgsqlCommand(query, connection);
                 command.Parameters.AddWithValue("@id", id);
 
-                NpgsqlDataReader reader = command.ExecuteReader();
+                await connection.OpenAsync();
 
-                if (reader.HasRows && reader.Read())
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows && await reader.ReadAsync())
                 {
                     location = ReadLocation(reader);
                 }
@@ -62,7 +66,7 @@ namespace GppApp.Repository
         /// </summary>
         /// <param name="location">The location for which to search a record in the database</param>
         /// <returns>The location object, null if not found</returns>
-        public Location Get(Location location)
+        public async Task<Location> GetAsync(Location location)
         {
             if (location == null) return null;
             Location oldLocation = null;
@@ -75,10 +79,10 @@ namespace GppApp.Repository
                 command.Parameters.AddWithValue("@country", location.Country);
                 command.Parameters.AddWithValue("@zipCode", location.ZipCode);
 
-                connection.Open();
+                await connection.OpenAsync();
 
-                NpgsqlDataReader reader = command.ExecuteReader();
-                if (reader.HasRows && reader.Read())
+                NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows && await reader.ReadAsync())
                 {
                     oldLocation = ReadLocation(reader);
                 }
@@ -86,7 +90,7 @@ namespace GppApp.Repository
             return oldLocation;
         }
 
-        public bool Add(Location location)
+        public async Task<bool> AddAsync(Location location)
         {
             Location newLocation = new Location()
             {
@@ -107,15 +111,14 @@ namespace GppApp.Repository
                 locationCommand.Parameters.AddWithValue("@address", newLocation.Address);
                 locationCommand.Parameters.AddWithValue("@zipCode", newLocation.ZipCode);
 
-                connection.Open();
+                await connection.OpenAsync();
 
-
-                numberOfAffectedRows = locationCommand.ExecuteNonQuery();
+                numberOfAffectedRows = await locationCommand.ExecuteNonQueryAsync();
             }
             return numberOfAffectedRows != 0;
         }
 
-        public bool Update(Location location)
+        public async Task<bool> UpdateAsync(Location location)
         {
             int numberOfAffectedRows = 0;
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
@@ -128,8 +131,9 @@ namespace GppApp.Repository
                 command.Parameters.AddWithValue("@address", location.Address);
                 command.Parameters.AddWithValue("@zipCode", location.ZipCode);
 
-                connection.Open();
-                numberOfAffectedRows = command.ExecuteNonQuery();
+                await connection.OpenAsync();
+
+                numberOfAffectedRows = await command.ExecuteNonQueryAsync();
             }
             return numberOfAffectedRows != 0;
         }

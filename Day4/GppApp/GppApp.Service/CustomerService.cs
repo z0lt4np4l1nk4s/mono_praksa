@@ -21,37 +21,37 @@ namespace GppApp.Service
             locationRepo = new LocationRepository();
         }
 
-        public List<Customer> GetAll() => repo.GetAll();
+        public async Task<List<Customer>> GetAllAsync() => await repo.GetAllAsync();
 
-        public Customer GetById(Guid id) => repo.GetById(id);
+        public async Task<Customer> GetByIdAsync(Guid id) => await repo.GetByIdAsync(id);
 
-        public bool Add(Customer customer)
+        public async Task<bool> AddAsync(Customer customer)
         {
-            Location newLocation = locationRepo.Get(customer.Location);
+            Location newLocation = await locationRepo.GetAsync(customer.Location);
 
             if (newLocation == null)
             {
                 customer.LocationId = customer.Location.Id = Guid.NewGuid();
-                bool result = locationRepo.Add(customer.Location);
+                bool result = await locationRepo.AddAsync(customer.Location);
                 if (!result) return false;
             }
             else customer.LocationId = newLocation.Id;
 
-            return repo.Add(customer);
+            return await repo.AddAsync(customer);
         }
 
-        public bool Update(Customer customer)
+        public async Task<bool> UpdateAsync(Customer customer)
         {
-            Location location = locationRepo.Get(customer.Location);
+            Location location = await locationRepo.GetAsync(customer.Location);
             if (location == null && customer.Location != null)
             {
                 customer.LocationId = customer.Location.Id = Guid.NewGuid();
-                locationRepo.Add(customer.Location);
+                await locationRepo.AddAsync(customer.Location);
             }
             if (location != null) customer.Location = location;
-            return repo.Update(customer);
+            return await repo.UpdateAsync(customer);
         }
 
-        public bool Remove(Guid id) => repo.Remove(id);
+        public async Task<bool> RemoveAsync(Guid id) => await repo.RemoveAsync(id);
     }
 }
