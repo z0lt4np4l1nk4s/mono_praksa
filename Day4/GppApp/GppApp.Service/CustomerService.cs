@@ -52,6 +52,11 @@ namespace GppApp.Service
             return await repo.UpdateAsync(customer);
         }
 
+        public async Task<bool> Any(Guid id)
+        {
+            return await repo.GetByIdAsync(id) != null;
+        }
+
         public async Task<bool> RemoveAsync(Guid id) => await repo.RemoveAsync(id);
     }
 }

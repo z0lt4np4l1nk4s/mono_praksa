@@ -13,6 +13,8 @@ namespace GppApp.Service.Common
 
         Task<Customer> GetByIdAsync(Guid id);
 
+        Task<bool> Any(Guid id);
+
         Task<bool> AddAsync(Customer customer);
 
         Task<bool> UpdateAsync(Customer customer);
