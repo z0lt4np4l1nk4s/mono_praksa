@@ -55,6 +55,7 @@
     <Compile Include="Ticket.cs" />
     <Compile Include="TicketType.cs" />
     <Compile Include="TicketTypeView.cs" />
+    <Compile Include="TicketView.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserView.cs" />
     <Compile Include="ZoneType.cs" />

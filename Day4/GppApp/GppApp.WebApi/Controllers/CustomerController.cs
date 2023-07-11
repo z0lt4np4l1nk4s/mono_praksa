@@ -1,4 +1,6 @@
-﻿using GppApp.Model;
+﻿using GppApp.Common;
+using GppApp.Common.Filters;
+using GppApp.Model;
 using GppApp.Service;
 using GppApp.Service.Common;
 using GppApp.WebApi.Models;
@@ -26,12 +28,47 @@ namespace GppApp.WebApi.Controllers
         }
 
         // GET: api/Customer
-        public async Task<HttpResponseMessage> Get()
+        public async Task<HttpResponseMessage> Get(string firstName = null, string lastName = null, int? minAge = null, int? maxAge = null, string city = null, string country = null, string zipCode = null, DateTime? registerDateStart = null, DateTime? registerDateEnd = null, string sortBy = "FirstName", string sortOrder = "ASC", int pageNumber = 1, int pageSize = 3)
         {
             try
             {
-                List<Customer> customers = await CustomerService.GetAllAsync();
-                return Request.CreateResponse(HttpStatusCode.OK, customers.Select(x => new CustomerView(x)).ToList());
+                Sorting sorting = new Sorting
+                {
+                    SortBy = sortBy,
+                    SortOrder = sortOrder
+                };
+                if (sorting.SortOrder.ToLower() != "desc" && sorting.SortOrder.ToLower() != "asc") sorting.SortOrder = "ASC";
+                Paging paging = new Paging()
+                {
+                    CurrentPage = pageNumber,
+                    PageSize = pageSize
+                };
+                CustomerFilter customerFilter = new CustomerFilter()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    City = city,
+                    Country = country,
+                    MaxAge = maxAge,
+                    MinAge = minAge,
+                    RegisterDateEnd = registerDateEnd,
+                    RegisterDateStart = registerDateStart,
+                    ZipCode = zipCode
+                };
+                PagedList<Customer> customers = await CustomerService.GetAllAsync(sorting, paging, customerFilter);
+
+                if (customers == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+                PagedList<CustomerView> pagedCustomers = new PagedList<CustomerView>
+                {
+                    CurrentPage = customers.CurrentPage,
+                    ItemCount = customers.ItemCount,
+                    LastPage = customers.LastPage,
+                    PageSize = customers.PageSize,
+                    Data = customers.Data.Select(x => new CustomerView(x)).ToList()
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, pagedCustomers);
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Code crash"); }
         }

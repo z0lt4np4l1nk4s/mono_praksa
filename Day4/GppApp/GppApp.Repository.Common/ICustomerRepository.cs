@@ -1,4 +1,6 @@
-﻿using GppApp.Model;
+﻿using GppApp.Common;
+using GppApp.Common.Filters;
+using GppApp.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace GppApp.Repository.Common
 {
     public interface ICustomerRepository
     {
-        Task<List<Customer>> GetAllAsync();
+        Task<PagedList<Customer>> GetAllAsync(Sorting sorting, Paging paging, CustomerFilter customerFilter);
 
         Task<Customer> GetByIdAsync(Guid id);
 

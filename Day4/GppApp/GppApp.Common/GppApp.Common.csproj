@@ -41,7 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\CustomerFilter.cs" />
+    <Compile Include="Filters\TicketFilter.cs" />
+    <Compile Include="Filters\UserFilter.cs" />
+    <Compile Include="PagedList.cs" />
+    <Compile Include="Paging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sorting.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

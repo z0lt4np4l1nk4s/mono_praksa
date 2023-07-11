@@ -8,5 +8,12 @@ namespace GppApp.Model
     public class ZoneTypeView
     {
         public string Name { get; set; }
+
+        public ZoneTypeView() { }
+
+        public ZoneTypeView(ZoneType zoneType)
+        {
+            Name = zoneType.Name;
+        }
     }
 }

@@ -1,9 +1,12 @@
-﻿using GppApp.Model;
+﻿using GppApp.Common;
+using GppApp.Common.Filters;
+using GppApp.Model;
 using GppApp.Repository.Common;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,24 +18,110 @@ namespace GppApp.Repository
     {
         public string ConnectionString { get => ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString; }
 
-        public async Task<List<Customer>> GetAllAsync()
+        public async Task<PagedList<Customer>> GetAllAsync(Sorting sorting, Paging paging, CustomerFilter customerFilter)
         {
-            List<Customer> customers = new List<Customer>();
+            PagedList<Customer> pagedList = new PagedList<Customer>();
+            if (paging == null) paging = new Paging();
+            if (sorting == null) sorting = new Sorting();
             using (NpgsqlConnection connection = new NpgsqlConnection(ConnectionString))
             {
-                string query = "SELECT * FROM \"Customer\" c INNER JOIN \"User\" u ON c.\"Id\" = u.\"Id\" INNER JOIN \"Location\" l ON u.\"LocationId\" = l.\"Id\";";
-                NpgsqlCommand command = new NpgsqlCommand(query, connection);
+                NpgsqlCommand command = new NpgsqlCommand();
+                command.Connection = connection;
+                command.Parameters.AddWithValue("@pageSize", paging.PageSize);
+                command.Parameters.AddWithValue("@skip", (paging.CurrentPage - 1) * paging.PageSize);
+
+                string sortBy = (sorting.SortBy.ToLower() == "RegisterDate".ToLower() ? "" : "u.") + "\"" + sorting.SortBy + "\"";
+
+                List<string> parameters = new List<string>();
+
+                if (customerFilter != null)
+                {
+
+                    if (customerFilter.FirstName != null)
+                    {
+                        parameters.Add("LOWER(u.\"FirstName\") LIKE @firstName");
+                        command.Parameters.AddWithValue("@firstName", "%" + customerFilter.FirstName.ToLower() + "%");
+                    }
+
+                    if (customerFilter.LastName != null)
+                    {
+                        parameters.Add("LOWER(u.\"LastName\") LIKE @lastName");
+                        command.Parameters.AddWithValue("@lastName", "%" + customerFilter.LastName.ToLower() + "%");
+                    }
+
+                    if (customerFilter.MinAge != null)
+                    {
+                        parameters.Add("DATE_PART('year', age(NOW(), u.\"DateOfBirth\")) >= @minAge");
+                        command.Parameters.AddWithValue("@minAge", customerFilter.MinAge);
+                    }
+
+                    if (customerFilter.MaxAge != null)
+                    {
+                        parameters.Add("DATE_PART('year', age(NOW(), u.\"DateOfBirth\")) <= @maxAge");
+                        command.Parameters.AddWithValue("@maxAge", customerFilter.MaxAge);
+                    }
+
+                    if (customerFilter.City != null)
+                    {
+                        parameters.Add("LOWER(l.\"City\") LIKE @city");
+                        command.Parameters.AddWithValue("@city", "%" + customerFilter.City.ToLower() + "%");
+                    }
+
+                    if (customerFilter.Country != null)
+                    {
+                        parameters.Add("LOWER(l.\"Country\") LIKE @country");
+                        command.Parameters.AddWithValue("@country", "%" + customerFilter.Country.ToLower() + "%");
+                    }
+
+                    if (customerFilter.ZipCode != null)
+                    {
+                        parameters.Add("LOWER(l.\"ZipCode\") LIKE @zipCode");
+                        command.Parameters.AddWithValue("@zipCode", "%" + customerFilter.ZipCode.ToLower() + "%");
+                    }
+
+                    if (customerFilter.RegisterDateStart != null)
+                    {
+                        parameters.Add("c.\"RegisterDate\" >= @registerDateStart");
+                        command.Parameters.AddWithValue("@registerDateStart", customerFilter.RegisterDateStart.Value);
+                    }
+
+                    if (customerFilter.RegisterDateEnd != null)
+                    {
+                        parameters.Add("c.\"RegisterDate\" <= @registerDateEnd");
+                        command.Parameters.AddWithValue("@registerDateEnd", customerFilter.RegisterDateEnd.Value);
+                    }
+                }
+
+                string selectQuery = "SELECT * FROM \"Customer\" c INNER JOIN \"User\" u ON c.\"Id\" = u.\"Id\" INNER JOIN \"Location\" l ON u.\"LocationId\" = l.\"Id\" " +
+                    (parameters.Count == 0 ? "" : " WHERE " + string.Join(" and ", parameters)) +
+                    $" ORDER BY {sortBy} {(sorting.SortOrder.ToLower() == "asc" ? "ASC" : "DESC")} LIMIT @pageSize OFFSET @skip;";
+
+                string countQuery = "SELECT COUNT(*) FROM \"Customer\"" + (parameters.Count == 0 ? "" : " WHERE " + string.Join(" and ", parameters));
+                NpgsqlCommand countCommand = new NpgsqlCommand(countQuery, connection);
+
+                foreach (NpgsqlParameter npgsqlParameter in command.Parameters) countCommand.Parameters.AddWithValue(npgsqlParameter.ParameterName, npgsqlParameter.Value);
+
+                command.CommandText = selectQuery;
 
                 await connection.OpenAsync();
 
+                object countResult = await countCommand.ExecuteScalarAsync();
+
                 NpgsqlDataReader reader = await command.ExecuteReaderAsync();
+
+                if (countResult == null || !reader.HasRows) return null;
 
                 while (reader.HasRows && await reader.ReadAsync())
                 {
-                    customers.Add(ReadCustomer(reader));
+                    pagedList.Data.Add(ReadCustomer(reader));
                 }
+
+                pagedList.CurrentPage = paging.CurrentPage;
+                pagedList.PageSize = paging.PageSize;
+                pagedList.ItemCount = Convert.ToInt32(countResult);
+                pagedList.LastPage = Convert.ToInt32(pagedList.ItemCount / paging.PageSize) + (pagedList.ItemCount % paging.PageSize != 0 ? 1 : 0);
             }
-            return customers;
+            return pagedList;
         }
 
         public async Task<Customer> GetByIdAsync(Guid id)

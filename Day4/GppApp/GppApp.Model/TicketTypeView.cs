@@ -8,5 +8,12 @@ namespace GppApp.Model
     public class TicketTypeView
     {
         public string Name { get; set; }
+
+        public TicketTypeView() { }
+
+        public TicketTypeView(TicketType ticketType)
+        {
+            Name = ticketType.Name;
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using GppApp.Model;
+﻿using GppApp.Common;
+using GppApp.Common.Filters;
+using GppApp.Model;
 using GppApp.Repository;
 using GppApp.Repository.Common;
 using GppApp.Service.Common;
@@ -21,7 +23,7 @@ namespace GppApp.Service
             locationRepo = locationRepository;
         }
 
-        public async Task<List<Customer>> GetAllAsync() => await repo.GetAllAsync();
+        public async Task<PagedList<Customer>> GetAllAsync(Sorting sorting, Paging paging, CustomerFilter customerFilter) => await repo.GetAllAsync(sorting, paging, customerFilter);
 
         public async Task<Customer> GetByIdAsync(Guid id) => await repo.GetByIdAsync(id);
 

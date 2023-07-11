@@ -97,12 +97,17 @@
     <Compile Include="LocationRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryModule.cs" />
+    <Compile Include="TicketRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GppApp.Common\GppApp.Common.csproj">
+      <Project>{D2FEB15E-5F2E-4D1A-8D58-47D72CF5F1D4}</Project>
+      <Name>GppApp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GppApp.Model\GppApp.Model.csproj">
       <Project>{15B318D8-DCF7-4D65-A207-9382B2C764E3}</Project>
       <Name>GppApp.Model</Name>
