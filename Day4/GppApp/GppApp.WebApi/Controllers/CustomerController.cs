@@ -19,10 +19,10 @@ namespace GppApp.WebApi.Controllers
         protected ICustomerService CustomerService { get; private set; }
         protected ILocationService LocationService { get; private set; }
 
-        public CustomerController()
+        public CustomerController(ICustomerService customerService, ILocationService locationService)
         {
-            CustomerService = new CustomerService();
-            LocationService = new LocationService();
+            CustomerService = customerService;
+            LocationService = locationService;
         }
 
         // GET: api/Customer
@@ -80,16 +80,17 @@ namespace GppApp.WebApi.Controllers
             try
             {
                 if (id == null || customer == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                if (!await CustomerService.Any(id)) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                bool result = await CustomerService.UpdateAsync(new Customer()
-                {
-                    Id = id,
-                    PhoneNumber = customer.PhoneNumber,
-                    Email = customer.Email,
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Location = new Location(customer.Location),
-                });
+                Customer oldCustomer = await CustomerService.GetByIdAsync(id);
+                if (oldCustomer == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+                if (customer.FirstName != null) oldCustomer.FirstName = customer.FirstName;
+                if (customer.LastName != null) oldCustomer.LastName = customer.LastName;
+                if (customer.Email != null) oldCustomer.Email = customer.Email;
+                if (customer.PhoneNumber != null) oldCustomer.PhoneNumber = customer.PhoneNumber;
+
+                oldCustomer.Location = new Location(customer.Location);
+
+                bool result = await CustomerService.UpdateAsync(oldCustomer);
 
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK);

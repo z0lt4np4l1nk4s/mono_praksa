@@ -103,39 +103,13 @@ namespace GppApp.Repository
                 command.Connection = connection;
                 command.Parameters.AddWithValue("@id", customer.Id);
 
-                if (customer.FirstName != null)
-                {
-                    updatedValues.Add("\"FirstName\" = @firstName");
-                    command.Parameters.AddWithValue("@firstName", customer.FirstName);
-                }
+                command.CommandText = "UPDATE \"User\" SET \"FirstName\" = @firstName, \"LastName\" = @lastName, \"Email\" = @email, \"PhoneNumber\" = @phoneNumber, \"LocationId\" = @locationId WHERE \"Id\" = @id";
 
-                if (customer.LastName != null)
-                {
-                    updatedValues.Add("\"LastName\" = @lastName");
-                    command.Parameters.AddWithValue("@lastName", customer.LastName);
-                }
-
-                if (customer.Email != null)
-                {
-                    updatedValues.Add("\"Email\" = @email");
-                    command.Parameters.AddWithValue("@email", customer.Email);
-                }
-
-                if (customer.PhoneNumber != null)
-                {
-                    updatedValues.Add("\"PhoneNumber\" = @phoneNumber");
-                    command.Parameters.AddWithValue("@phoneNumber", customer.PhoneNumber);
-                }
-
-                if (customer.Location != null)
-                {
-                    updatedValues.Add("\"LocationId\" = @locationId");
-                    command.Parameters.AddWithValue("@locationId", customer.Location.Id);
-                }
-
-                if (updatedValues.Count == 0) return false;
-
-                command.CommandText = "UPDATE \"User\" SET " + string.Join(", ", updatedValues) + " WHERE \"Id\" = @id";
+                command.Parameters.AddWithValue("@firstName", customer.FirstName);
+                command.Parameters.AddWithValue("@lastName", customer.LastName);
+                command.Parameters.AddWithValue("@email", customer.Email);
+                command.Parameters.AddWithValue("@phoneNumber", customer.PhoneNumber);
+                command.Parameters.AddWithValue("@locationId", customer.Location.Id);
 
                 await connection.OpenAsync();
                 numberOfAffectedRows = await command.ExecuteNonQueryAsync();

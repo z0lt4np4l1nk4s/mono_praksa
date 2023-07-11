@@ -15,10 +15,10 @@ namespace GppApp.Service
         public ICustomerRepository repo;
         public ILocationRepository locationRepo;
 
-        public CustomerService()
+        public CustomerService(ICustomerRepository customerRepository, ILocationRepository locationRepository)
         {
-            repo = new CustomerRepository();
-            locationRepo = new LocationRepository();
+            repo = customerRepository;
+            locationRepo = locationRepository;
         }
 
         public async Task<List<Customer>> GetAllAsync() => await repo.GetAllAsync();

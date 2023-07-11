@@ -14,9 +14,9 @@ namespace GppApp.Service
     {
         private readonly ILocationRepository repo;
 
-        public LocationService()
+        public LocationService(ILocationRepository locationRepository)
         {
-            repo = new LocationRepository();
+            repo = locationRepository;
         }
 
         public async Task<List<Location>> GetAllAsync() => await repo.GetAllAsync();
@@ -38,5 +38,7 @@ namespace GppApp.Service
         public async Task<bool> AddAsync(Location location) => await repo.AddAsync(location);
 
         public async Task<bool> UpdateAsync(Location location) => await repo.UpdateAsync(location);
+
+        public async Task<bool> Any(Guid id) => await repo.GetByIdAsync(id) != null;
     }
 }

@@ -13,11 +13,11 @@ namespace GppApp.WebApi.Controllers
 {
     public class LocationController : ApiController
     {
-        private readonly ILocationService iLocationService;
+        private ILocationService LocationService { get; }
 
-        public LocationController()
+        public LocationController(ILocationService locationService)
         {
-            iLocationService = new LocationService();
+            LocationService = locationService;
         }
 
         // GET: api/Location
@@ -25,7 +25,7 @@ namespace GppApp.WebApi.Controllers
         {
             try
             {
-                List<Location> locations = await iLocationService.GetAllAsync();
+                List<Location> locations = await LocationService.GetAllAsync();
                 return Request.CreateResponse(HttpStatusCode.OK, locations.Select(x => new LocationView(x)));
             }
             catch { return Request.CreateResponse(HttpStatusCode.InternalServerError, "Code crash"); }
@@ -37,7 +37,7 @@ namespace GppApp.WebApi.Controllers
             try
             {
                 if (id == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                Location location = await iLocationService.GetByIdAsync(id);
+                Location location = await LocationService.GetByIdAsync(id);
                 if (location == null) return Request.CreateResponse(HttpStatusCode.NotFound);
                 return Request.CreateResponse(HttpStatusCode.OK, new LocationView(location));
             }
@@ -53,7 +53,7 @@ namespace GppApp.WebApi.Controllers
                 Location newLocation = new Location(location);
                 newLocation.Id = Guid.NewGuid();
 
-                bool result = await iLocationService.AddAsync(newLocation);
+                bool result = await LocationService.AddAsync(newLocation);
 
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK);
@@ -67,10 +67,15 @@ namespace GppApp.WebApi.Controllers
             try
             {
                 if (id == null || location == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
-                Location newLocation = new Location(location);
-                newLocation.Id = id;
+                Location oldLocation = await LocationService.GetByIdAsync(id);
+                if (oldLocation == null) return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-                bool result = await iLocationService.UpdateAsync(newLocation);
+                if (location.Address != null) oldLocation.Address = location.Address;
+                if (location.City != null) oldLocation.City = location.City;
+                if (location.ZipCode != null) oldLocation.ZipCode = location.ZipCode;
+                if (location.Country != null) oldLocation.Country = location.Country;
+
+                bool result = await LocationService.UpdateAsync(oldLocation);
 
                 if (!result) return Request.CreateResponse(HttpStatusCode.BadRequest);
                 return Request.CreateResponse(HttpStatusCode.OK);
