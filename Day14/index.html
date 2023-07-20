@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <script src="scripts.js">
+            document.addEventListener('DOMContentLoaded', function() {
+                loadUsersToTable();
+            });
+        </script>
+        <title>Home</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="main">
+            <h1>Welcome to this page!</h1>
+            <div style="text-align: justify;">
+                <h2 style="margin-left: 35px;">Info</h2>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce at dapibus lacus, a volutpat nisl. Nam volutpat pellentesque sagittis. Ut dignissim vulputate tortor. Praesent eget semper risus. Aliquam nec rhoncus turpis. Cras laoreet, purus non faucibus facilisis, massa diam finibus ante, a rutrum elit metus sed purus. Sed posuere ultrices dignissim. Ut ac varius arcu. Sed in neque nec eros efficitur placerat in in turpis. Nunc et mollis lacus, non condimentum ipsum. Morbi elementum ut quam ut imperdiet. Nulla facilisi. Curabitur feugiat dui ullamcorper neque euismod, quis suscipit ante facilisis.
+
+    Fusce maximus metus eu purus auctor, feugiat posuere mi viverra. Nunc at placerat lorem, et mollis arcu. Aenean vel orci mauris. Nullam porttitor nisl sed ullamcorper rutrum. Maecenas vel convallis ipsum. Donec enim nibh, fermentum at justo sit amet, mattis malesuada elit. Nam odio diam, convallis at luctus vel, tempor et enim. Phasellus eu urna sed nunc euismod porttitor vitae ut leo. Aenean quis sagittis diam, eu consectetur purus. Vivamus consectetur tortor eget ornare venenatis.
+
+    Cras non auctor odio. Vivamus a mi massa. In tincidunt egestas auctor. In hac habitasse platea dictumst. In hac habitasse platea dictumst. Nulla pellentesque, tellus eu tempus auctor, quam sem rhoncus massa, ac blandit elit mi quis leo. Suspendisse maximus arcu bibendum magna condimentum, vitae dignissim massa finibus. Aenean velit arcu, dictum eget libero ac, fringilla tincidunt diam. Morbi at porta neque, id pellentesque elit. Maecenas eget tempor odio. Proin hendrerit leo eget faucibus efficitur.      
+        </div>
+            
+            <br>
+            <div >
+                <h4>Click here to add a new user: </h4>
+                <a href="create.html">
+                    <button class="buttonStyle">Create</button>
+                </a>
+            </div>
+            <br>
+            <div id="data">
+                <table id="usersTable" class="tableStyle">
+                    <thead>
+                        <tr>
+                            <td class="td_odd">Id</td>
+                            <td class="td_even">First name</td>
+                            <td class="td_odd">Last name</td>
+                            <td class="td_even">Email</td>
+                            <td class="td_odd">Actions</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="td_odd">1</td>
+                            <td class="td_even">John</td>
+                            <td class="td_odd">Doe</td>
+                            <td class="td_even">john.doe@example.com</td>
+                            <td class="td_odd">
+                                <a href="edit.html?id=1"><button class="actionButton editActionButton">Edit</button></a>
+                                <button class="actionButton deleteActionButton">Delete</button>
+                            </td>
+                        </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,72 @@
+h1 {
+    color: rgb(54, 110, 110);
+}
+
+body {
+    color: blueviolet;
+}
+
+.tableStyle {
+    color: aquamarine;
+}
+
+td {
+    border: 1px solid grey;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 150px;
+    text-align: center;
+    height: 35;
+}
+
+thead{
+    font-weight: 700;
+}
+
+.td_even {
+    background-color: white;
+    color: black;
+}
+
+.td_odd {
+    background-color: black;
+    color: white;
+}
+
+.buttonStyle {
+    width: 120px;
+    height: 35px;
+    background-color: rgb(37, 76, 78);
+    color: whitesmoke;
+    border-radius: 8px;
+
+}
+
+.actionButton {
+    width: 60;
+    height: 22;
+    color: white;
+}
+
+.deleteActionButton {
+    background-color: red;
+}
+
+.editActionButton {
+
+    background-color: grey;
+}
+
+.main {
+    width: 800;
+    text-align: center;
+}
+
+.formStyle{
+    text-align: left;
+    font-size: 16;
+}
+
+.inputField {
+    margin-bottom: 10;
+}
