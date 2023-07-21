@@ -15,6 +15,11 @@ function getUsersList()
     return users;
 }
 
+function saveUsersList(users)
+{
+    localStorage.setItem('users', JSON.stringify(users))
+}
+
 function createUser()
 {
     const idInput = document.getElementById("id")
@@ -35,7 +40,15 @@ function createUser()
     console.log(user);
   
     // For example, you can store it in local storage as shown in the previous answer
-    addOrUpdateUser(user);
+    const users = getUsersList();
+    const oldUser = users.find(u => u.id == id);
+    if(!oldUser) 
+    {
+        users.push(user);
+        saveUsersList(users);
+    }
+    
+
     location.href = 'index.html';
 }
 
@@ -49,36 +62,18 @@ function editUser()
     const firstName = firstNameInput.value;
     const lastName = lastNameInput.value;
     const email = emailInput.value;
+    const userId = getUserId();
 
-    const user = getUsersList().find(u => u.id == getUserId());
+    const users = getUsersList();
+    const user = users.find(u => u.id == userId);
     if(user !== null)
     {
         user.firstName = firstName;
         user.lastName = lastName;
         user.email = email;  
-        addOrUpdateUser(user); 
+        saveUsersList(users);
     }
     location.href = 'index.html';
-}
-
-function addOrUpdateUser(user)
-{
-    const users = getUsersList();
-    const oldUser = users.find(u => u.id === user.id);
-    if(oldUser)
-    {
-        oldUser.firstName = user.firstName;
-        oldUser.lastName = user.lastName;
-        oldUser.email = user.email;
-    }
-    else
-    {
-        users.push(user);
-    }
-
-    console.log(users);
-
-    localStorage.setItem('users', JSON.stringify(users));
 }
 
 function loadUsersToTable() {
