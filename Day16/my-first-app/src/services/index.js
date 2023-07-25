@@ -1,5 +1,10 @@
-export {getUsersList} from './user_service'
-export {getById} from './user_service'
-export {addUser} from './user_service'
-export {editUser} from './user_service'
-export {removeUser} from './user_service'
+export { getUsersList } from "./user_service";
+export { getById } from "./user_service";
+export { addUser } from "./user_service";
+export { editUser } from "./user_service";
+export { removeUser } from "./user_service";
+export { getStudents } from "./student_service";
+export { getStudentById } from "./student_service";
+export { postStudent } from "./student_service";
+export { updateStudent } from "./student_service";
+export { removeStudent } from "./student_service";

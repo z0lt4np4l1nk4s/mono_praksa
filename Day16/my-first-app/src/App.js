@@ -1,23 +1,22 @@
-import './App.css';
-import ClassButtonTest from './components/ClassButtonTest';
-import CustomClassButton from './components/CustomClassButton';
-import CustomFunctionButton from './components/CustomFunctionButton';
-import FormTest from './components/FormTest';
-import FunctionButtonTest from './components/FunctionButtonTest';
-import JokeButton from './components/JokeButton';
+import "./App.css";
+import ClassButtonTest from "./components/ClassButtonTest";
+import CustomClassButton from "./components/CustomClassButton";
+import CustomFunctionButton from "./components/CustomFunctionButton";
+import FormTest from "./components/FormTest";
+import FunctionButtonTest from "./components/FunctionButtonTest";
+import JokeButton from "./components/JokeButton";
+import WebApiTest from "./components/WebApiTest";
 
 function App() {
-
-  function saveMessage(message)
-  {
-    localStorage.setItem('greeting', message);
-  }
+  // function saveMessage(message) {
+  //   localStorage.setItem("greeting", message);
+  // }
 
   return (
     <div className="App">
-      <FormTest />
+      <WebApiTest />
       <br></br>
-      <CustomFunctionButton buttonColor='primary' onClick={() => saveMessage('Hello')}>
+      {/* <CustomFunctionButton buttonColor='primary' onClick={() => saveMessage('Hello')}>
         Save 'Hello' to local storage
       </CustomFunctionButton>
       <CustomClassButton buttonColor='primary' onClick={() => saveMessage('Hi Class')}>
@@ -27,9 +26,8 @@ function App() {
         Read message from local storage
       </CustomClassButton>
       <ClassButtonTest />
-      <FunctionButtonTest />
+      <FunctionButtonTest /> */}
       <JokeButton />
-
     </div>
   );
 }

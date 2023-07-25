@@ -1,7 +1,7 @@
 import React from "react";
-import UserComponent from "./UserComponent";
+import StudentComponent from "./StudentComponent";
 
-export default function UsersList({ users, onEdit, onRemove }) {
+export default function StudentsList({ students, onEdit, onRemove }) {
   return (
     <table className="table table-dark table-striped">
       <thead>
@@ -14,11 +14,11 @@ export default function UsersList({ users, onEdit, onRemove }) {
         </tr>
       </thead>
       <tbody>
-        {users.map((user) => {
+        {students.map((student) => {
           return (
-            <UserComponent
-              key={user.id}
-              user={user}
+            <StudentComponent
+              key={student.id}
+              student={student}
               onEdit={onEdit}
               onRemove={onRemove}
             />
