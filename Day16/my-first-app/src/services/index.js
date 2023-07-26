@@ -8,3 +8,5 @@ export { getStudentById } from "./student_service";
 export { postStudent } from "./student_service";
 export { updateStudent } from "./student_service";
 export { removeStudent } from "./student_service";
+export { login } from "./login_service";
+export { logOut } from "./login_service";

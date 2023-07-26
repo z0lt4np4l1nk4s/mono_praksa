@@ -6,10 +6,14 @@ import { Student } from "../models/student";
 const urlPrefix = Server.url + "Student";
 
 export async function getStudents() {
-  const response = await axios.get(urlPrefix, { headers: HttpHeader.get() });
-  console.log(response);
-  if (response.status !== 200) return [];
-  return response.data["Data"].map((data) => Student.fromJson(data));
+  try {
+    const response = await axios.get(urlPrefix, { headers: HttpHeader.get() });
+    console.log(response);
+    if (response.status !== 200) return [];
+    return response.data["Data"].map((data) => Student.fromJson(data));
+  } catch {
+    return [];
+  }
 }
 
 export async function getStudentById(id) {
