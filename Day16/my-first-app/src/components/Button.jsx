@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CustomFunctionButton(props) {
+export default function Button(props) {
   return (
     <button
       className={"btn btn-" + (props.buttonColor ?? "primary")}

@@ -1,19 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CustomFunctionButton from "../components/CustomFunctionButton";
+import { Button } from "../components";
 import CustomInput from "../components/CustomInput";
-import { login } from "../services";
+import { LoginService } from "../services";
 
 export default function LoginPage() {
+  const loginService = new LoginService();
   const navigate = useNavigate();
+
   async function onSubmit(e) {
     e.preventDefault();
-    const result = await login({
+    const result = await loginService.loginAsync({
       username: e.target.email.value,
       password: e.target.password.value,
     });
     if (result) navigate("/");
-    console.log(result);
   }
 
   return (
@@ -26,9 +27,9 @@ export default function LoginPage() {
         <div className="mb-3 mt-3 w-50">
           <CustomInput type="password" name="password" text="Password:" />
         </div>
-        <CustomFunctionButton type={"submit"} buttonColor={"primary"}>
+        <Button type={"submit"} buttonColor={"primary"}>
           Login
-        </CustomFunctionButton>
+        </Button>
       </form>
     </div>
   );

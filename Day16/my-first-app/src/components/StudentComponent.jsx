@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { removeStudent } from "../services";
-import CustomFunctionButton from "./CustomFunctionButton";
+import { StudentService } from "../services";
+import Button from "./Button";
 
 export default function StudentComponent({ student, onEdit, onRemove }) {
+  const studentService = new StudentService();
   const navigate = useNavigate();
   return (
     <tr>
@@ -12,33 +13,30 @@ export default function StudentComponent({ student, onEdit, onRemove }) {
       <td>{student.lastName}</td>
       <td>{student.email}</td>
       <td>
-        <CustomFunctionButton
+        <Button
           buttonColor="primary"
           onClick={() => navigate(`/student/details/${student.id}`)}
         >
           Details
-        </CustomFunctionButton>
-        <CustomFunctionButton
-          buttonColor="secondary"
-          onClick={() => onEdit(student.id)}
-        >
+        </Button>
+        <Button buttonColor="secondary" onClick={() => onEdit(student.id)}>
           Edit
-        </CustomFunctionButton>
-        <CustomFunctionButton
+        </Button>
+        <Button
           buttonColor="danger"
           onClick={async () => {
             const result = window.confirm(
               "Jeste li sigurni da zelite ukloniti ovog korisnika?"
             );
             if (result) {
-              removeStudent(student.id).then(() => {
+              await studentService.removeAsync(student.id).then(() => {
                 onRemove();
               });
             }
           }}
         >
           Delete
-        </CustomFunctionButton>
+        </Button>
       </td>
     </tr>
   );

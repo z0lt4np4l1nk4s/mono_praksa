@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { logOut } from "../services";
-import CustomFunctionButton from "./CustomFunctionButton";
+import { LoginService } from "../services";
+import Button from "./Button";
 
 export default function NavigationComponent() {
+  const loginService = new LoginService();
   const navigate = useNavigate();
   return (
     <nav>
@@ -12,14 +13,14 @@ export default function NavigationComponent() {
           <Link to={"/"}>Home</Link>
         </li>
         <li>
-          <CustomFunctionButton
+          <Button
             buttonColor={"secondary"}
             onClick={() => {
-              if (logOut()) navigate("/login");
+              if (loginService.logOut()) navigate("/login");
             }}
           >
             Logout
-          </CustomFunctionButton>
+          </Button>
         </li>
       </ul>
     </nav>

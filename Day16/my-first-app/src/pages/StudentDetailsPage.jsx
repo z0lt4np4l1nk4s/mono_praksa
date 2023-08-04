@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { NavigationComponent } from "../components";
-import { getStudentById } from "../services";
+import { Loader, NavigationComponent } from "../components";
+import { StudentService } from "../services";
 
 export default function StudentDetailsPage() {
+  const studentService = new StudentService();
   const [loading, setLoading] = useState(true);
   const [student, setStudent] = useState({});
   const params = useParams();
 
   async function getStudent() {
-    getStudentById(params.id).then((student) => {
+    await studentService.getByIdAsync(params.id).then((student) => {
       setLoading(false);
       setStudent(student);
     });
@@ -19,7 +20,7 @@ export default function StudentDetailsPage() {
     getStudent();
   }, []);
 
-  if (loading) return <div className="spinner-border text-light"></div>;
+  if (loading) return <Loader />;
 
   return (
     <div className="bg-dark">

@@ -3,48 +3,62 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Student } from "../models";
-import { getStudentById, updateStudent } from "../services";
-import CustomFunctionButton from "./CustomFunctionButton";
+import { CountyService, StudentService, StudyAreaService } from "../services";
+import Button from "./Button";
 import CustomInput from "./CustomInput";
+import Loader from "./Loader";
+import SelectDropdown from "./SelectDropdown";
 
 export default function EditStudentForm() {
+  const studentService = new StudentService();
+  const countyService = new CountyService();
+  const studyAreaService = new StudyAreaService();
   const [loading, setLoading] = useState(true);
   const [student, setStudent] = useState({});
+  const [counties, setCounties] = useState([]);
+  const [studyArea, setStudyAreas] = useState([]);
   const navigate = useNavigate();
   const params = useParams();
 
+  useEffect(() => {
+    async function fetchData() {
+      getStudent();
+      setCounties(await countyService.getAsync());
+      setStudyAreas(await studyAreaService.getAsync());
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
   async function getStudent() {
-    getStudentById(params.id).then((student) => {
+    await studentService.getByIdAsync(params.id).then((student) => {
       setLoading(false);
       setStudent(student);
     });
   }
 
-  useEffect(() => {
-    getStudent();
-  }, []);
-
-  if (loading) return <div className="spinner-border text-light"></div>;
+  if (loading) return <Loader />;
 
   return (
     <form
       className="form"
       onSubmit={async (e) => {
-        var newStudent = new Student({
-          firstName: e.target.firstName.value,
-          lastName: e.target.lastName.value,
-          email: e.target.email.value,
-          phoneNumber: e.target.phoneNumber.value,
-          address: e.target.address.value,
-          description: e.target.description.value,
-          password: e.target.password ? e.target.password.value : null,
-          countyId: "1eb58f2e-7966-4171-90a6-8912558325df",
-          studyAreaId: "a64f9a74-5792-4672-97eb-e388ced412cf",
-        });
-        const result = await updateStudent(student.id, newStudent);
-        if (result) {
-          navigate("/");
-        }
+        console.log(e);
+        // var newStudent = new Student({
+        //   firstName: e.target.firstName.value,
+        //   lastName: e.target.lastName.value,
+        //   email: e.target.email.value,
+        //   phoneNumber: e.target.phoneNumber.value,
+        //   address: e.target.address.value,
+        //   description: e.target.description.value,
+        //   password: e.target.password ? e.target.password.value : null,
+        //   countyId: "1eb58f2e-7966-4171-90a6-8912558325df",
+        //   studyAreaId: "a64f9a74-5792-4672-97eb-e388ced412cf",
+        // });
+        // const result = await studentService.updateAsync(student.id, newStudent);
+        // if (result) {
+        //   navigate("/");
+        // }
       }}
     >
       <div className="mb-3 mt-3 w-50">
@@ -70,19 +84,36 @@ export default function EditStudentForm() {
         />
       </div>
       <div className="mb-3 mt-3 w-50">
+        <SelectDropdown
+          text={"Županija:"}
+          placeholder={"Odaberite županiju"}
+          name={"county"}
+          list={counties}
+        />
+      </div>
+      <div className="mb-3 mt-3 w-50">
         <CustomInput name="address" text="Address:" value={student.address} />
       </div>
+
       <div className="mb-3 mt-3 w-50">
         <CustomInput
           name="description"
           text="Description:"
           value={student.description}
         />
+        <div className="mb-3 mt-3 w-50">
+          <SelectDropdown
+            text={"Područje obrazovanja:"}
+            placeholder={"Odaberite područje obrazovanja"}
+            name={"studyArea"}
+            list={studyArea}
+          />
+        </div>
       </div>
       <br></br>
-      <CustomFunctionButton buttonColor="primary" type="submit">
+      <Button buttonColor="primary" type="submit">
         Save
-      </CustomFunctionButton>
+      </Button>
     </form>
   );
 }

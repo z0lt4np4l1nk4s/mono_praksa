@@ -20,8 +20,6 @@ export function addUser(user) {
 export function editUser(user) {
   const users = getUsersList();
   const oldUser = users.find((u) => u.id === user.id);
-  console.log(users);
-  console.log(oldUser);
   if (oldUser) {
     oldUser.firstName = user.firstName;
     oldUser.lastName = user.lastName;

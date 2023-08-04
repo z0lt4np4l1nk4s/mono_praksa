@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { NavigationComponent, StudentsList } from "../components";
-import CustomFunctionButton from "../components/CustomFunctionButton";
-import { getStudents } from "../services";
+import { Button, NavigationComponent, StudentsList } from "../components";
+import { StudentService } from "../services";
 
 export default function HomePage() {
+  const studentService = new StudentService();
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
 
   async function refreshStudents() {
-    const data = await getStudents();
-    console.log(data);
+    const data = await studentService.getAsync();
     setStudents(data);
   }
 
@@ -23,14 +22,14 @@ export default function HomePage() {
     <div className="bg-dark">
       <NavigationComponent />
       <h1 className="text-light">HomePage</h1>
-      <CustomFunctionButton
+      <Button
         buttonColor="success"
         onClick={() => {
           navigate("/student/register");
         }}
       >
         New student
-      </CustomFunctionButton>
+      </Button>
       <StudentsList
         students={students}
         onEdit={(id) => {
